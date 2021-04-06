@@ -506,7 +506,7 @@ void LCD_Init(RCC_ClocksTypeDef* rccClocks, uint16_t ui16BackColor)
 {
   LCD_HardwareConfig();
   LCD_init_RGB();
-  GUI_Clear(ui16BackColor);
+  GUI_Clear();
   Delay_ms(120);
 
 #ifdef LCD_LED_PIN

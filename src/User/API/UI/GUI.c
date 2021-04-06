@@ -1,5 +1,6 @@
 #include "GUI.h"
 #include "includes.h"
+#include "background.h"
 
 void LCD_SetWindow(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey)
 {
@@ -11,27 +12,25 @@ void LCD_SetWindow(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey)
   LCD_WR_DATA(ey>>8);LCD_WR_DATA(ey&0xFF);
 }
 
-void GUI_Clear(uint16_t color)
+void GUI_Clear()
 {
-  uint32_t index=0;
-  LCD_SetWindow(0, 0, LCD_WIDTH-1, LCD_HEIGHT-1);
-  LCD_WR_REG(0x2C);
-  for(index=0; index<LCD_WIDTH*LCD_HEIGHT; index++)
-  {
-    LCD_WR_16BITS_DATA(color);
-  }
+  GUI_FillRectColor(0, 0, LCD_WIDTH, LCD_HEIGHT, LCD_COLOR_BACKGROUND);
 }
 
 void GUI_FillRectColor(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color)
 {
-  uint16_t i=0, j=0;
+  uint32_t x=0, y=0;
   LCD_SetWindow(sx, sy, ex-1, ey-1);
   LCD_WR_REG(0x2C);
-  for(i=sx; i<ex; i++)
+  for(y=sy; y<ey; y++)
   {
-    for(j=sy; j<ey; j++)
+    for(x=sx; x<ex; x++)
     {
-      LCD_WR_16BITS_DATA(color);
+      if (color == LCD_COLOR_BACKGROUND) {
+        LCD_WR_16BITS_DATA(backgroundPalette[backgroundPixels[y][x]]);
+      } else {
+        LCD_WR_16BITS_DATA(color);
+      }
     }
   }
 }

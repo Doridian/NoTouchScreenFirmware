@@ -117,19 +117,6 @@ int main(void)
   st7920StartX = (LCD_WIDTH - st7920PixelSize * ST7920_GXROWS) / 2;
   st7920StartY = 8 + (LCD_HEIGHT - 8 - st7920PixelSize * ST7920_GYROWS) / 2;
 
-  // Show title
-  const uint8_t pTitle[] = {0x7F, 0x02, 0x04, 0x08, 0x7F, 0x38, 0x44, 0x44, 0x44, 0x38, 0x01, 0x01, 0x7F, 0x01, 0x01, 0x38, 0x44, 0x44, 0x44, 0x38, 0x3C, 0x40, 0x20, 0x7C, 0x00, 0x38, 0x44, 0x44, 0x44, 0x28, 0x7F, 0x04, 0x04, 0x78, 0x00, 0x7F, 0x09, 0x09, 0x09, 0x01, 0x3C, 0x60, 0x30, 0x60, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0x20, 0x40, 0x20, 0x1F, 0x00, 0x42, 0x7F, 0x40, 0x00, 0x00, 0x60, 0x60, 0x00, 0x00, 0x22, 0x49, 0x49, 0x49, 0x36};
-  for (uint16_t i = 0, x = (LCD_WIDTH - sizeof(pTitle) / 5 * 6) / 2; i < sizeof(pTitle); ++i, ++x) {
-    for (uint8_t y = 0; y < 8; ++y) {
-      if ((pTitle[i] & (1 << y)) > 0) {
-        FILLRECT(x, y, 1, 1, LCD_COLOR_FOREGROUND);
-      }
-    }
-    if ((i % 5) == 4) {
-      ++x;
-    }
-  }
-
   // Create emulator handle
   St7920Emulator st7920Emulator(clearDisplay, drawByte);
 
@@ -139,9 +126,6 @@ int main(void)
     st7920Emulator.parseSerialData(pStartupMessage[i]);
   }
   st7920Emulator.reset(false);
-
-  // Add first part of header line
-  FILLRECT(0, 7, (LCD_WIDTH - sizeof(pTitle) / 5 * 6) / 2 - 1, 1, LCD_COLOR_FOREGROUND);
 
   // Init slave SPI
   ui32SpiActivated = 0;
@@ -170,9 +154,6 @@ int main(void)
   uint8_t ui8LastEncoder = 0;
   uint32_t ui32LastActive = 0;
 #endif
-
-  // Add second part of header line
-  FILLRECT((LCD_WIDTH + sizeof(pTitle) / 5 * 6) / 2, 7, (LCD_WIDTH - sizeof(pTitle) / 5 * 6) / 2, 1, LCD_COLOR_FOREGROUND);
 
   // Variables for SPI data received indicator
 #if defined(SPI_DATA_RECEIVED_INDICATOR)
